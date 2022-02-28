@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+				http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util-4.1.xsd"
+				>
+<!-- 				profile="local" -->
+	<!-- bean definitions here -->
+
+	<util:properties id="base-properties"
+		location="classpath:config/base.properties" />
+	<util:properties id="xml-properties">
+		<prop key="test.prop.sample">Sample value from xml-properties</prop>
+		<prop key="test.prop.xml.exclusive">${test.prop.placeholder} in xml-properties</prop>
+		<prop key="user.home">Custom user home in xml-properties</prop>
+		<prop key="test.prop.xml.user.home">${user.home} in xml-properties</prop>
+	</util:properties>
+	
+	<util:properties id="test-properties">
+    	<prop key="test.prop.system.spel">"#{ systemProperties['user.home'] }"</prop>
+		<prop key="test.prop.enum">IN</prop>
+		<prop key="test.prop.list.string">List-Item-1,List-Item-2,List-Item-3</prop>
+		<prop key="test.prop.list.float">1.1,2.2,3.3</prop>
+		<prop key="test.prop.array">Array-Item-1,Array-Item-2,Array-Item-3</prop>
+<!-- 		<prop key="test.prop.map">"#{ {name:'Nikola',dob:'10-July-1856'} }"</prop> -->
+		<prop key="test.prop.map.name">Nikola</prop>
+		<prop key="test.prop.map.dob">10-July-1856</prop>
+		<prop key="test.prop.spel.expression">"#{ 1+2-3*8 }"</prop>
+	</util:properties>
+
+	<!-- <bean id="derivedProperties" -->
+	<!-- class="org.springframework.beans.factory.config.PropertiesFactoryBean" -->
+	<!-- parent="default-properties"> -->
+	<!-- <property name="properties"> -->
+	<!-- <props merge="true"> -->
+	<!-- <prop key="derived.key1">Derived Value 1</prop> -->
+	<!-- <prop key="list.prop">Item 1, Item 2, Item 3</prop> -->
+	<!-- </props> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+	<util:map id="externalProperties"
+		map-class="java.util.LinkedHashMap" key-type="java.lang.String"
+		value-type="java.util.Properties">
+		<entry key="base-properties" value-ref="base-properties" />
+		<entry key="xml-properties" value-ref="xml-properties" />
+		<entry key="test-properties" value-ref="test-properties" />
+	</util:map>
+
+	<!-- <bean -->
+	<!-- class="com.ksoot.hammer.common.spring.config.external.ExternalPropertySourcesPlaceholderConfigurer"> -->
+	<!-- <property name="ignoreUnresolvablePlaceholders" value="false" /> -->
+	<!-- <property name="externalProperties" ref="externalProperties" /> -->
+	<!-- </bean> -->
+
+	<util:properties id="messages"
+		location="classpath:i18n/messages.properties">
+		<prop key="local.message">XML file contained message</prop>
+	</util:properties>
+	<util:properties id="errors">
+		<prop key="local.error.message">XML file contained error message</prop>
+	</util:properties>
+	<util:properties id="messages_en">
+		<prop key="placeholder.test.message">${test.prop.sample} resolved message en</prop>
+	</util:properties>
+
+<!-- 	<util:map id="resourceBundles" map-class="java.util.HashMap" -->
+<!-- 		key-type="java.util.Locale" value-type="java.util.List"> -->
+<!-- 		<entry key="default"> -->
+<!-- 			<util:list value-type="java.util.Properties"> -->
+<!-- 				<ref bean="messages" /> -->
+<!-- 				<ref bean="errors" /> -->
+<!-- 			</util:list> -->
+<!-- 		</entry> -->
+<!-- 		<entry key="en" value-ref="messages_en" /> -->
+<!-- 	</util:map> -->
+
+<!-- 	<util:map id="resourceBundles" map-class="java.util.HashMap" -->
+<!-- 		key-type="java.util.Locale" value-type="java.util.Properties"> -->
+<!-- 		<entry key="ROOT" value-ref="messages" /> -->
+<!-- 		<entry key="en" value-ref="messages_en" /> -->
+<!-- 	</util:map> -->
+
+</beans>

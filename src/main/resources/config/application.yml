@@ -1,0 +1,171 @@
+
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+#
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+# set -Dspring.profiles.active=<dev|sit|int> as JVM argument to run in desired profile
+# If no profile is specified explicitly, application will fall back to default profile, which is "local"
+
+#logging:
+#    level:
+#        ROOT: DEBUG
+#debug: true
+spring:
+    profiles:
+        active: local
+        #include:
+            #- swagger
+    devtools: 
+         restart: 
+             enabled: false
+             exclude: application.log,*.log,*.log.*
+    application:
+        name: servlet-web-application
+    jmx:
+        enabled: false  
+        default-domain: ksoot-test
+    # You might wanna enable Keycloak security, cache and Cloud Config later on
+    cache:
+        type: NONE
+    autoconfigure:
+        exclude: 
+            #- org.keycloak.adapters.springboot.KeycloakAutoConfiguration    
+    cloud:
+        config:
+            enabled: false
+            discovery:
+                enabled: false
+    messages:
+        basename: 
+            -i18n/messages
+            -i18n/errors
+    main:
+        log-startup-info: true
+#    output:
+#        ansi:
+#            enabled: always
+    # Highest priority (only lower that VM args), override from application.yml 
+    #config:
+        #location: classpath:/config/
+        #name: default
+        #import: 
+            #- classpath:/config/default.yml
+            #- classpath:/config/override.properties
+    task:
+        execution:
+            thread-name-prefix: hammer-task-executor-
+            pool:
+                core-size: 4
+                max-size: 16
+                queue-capacity: 100
+                keep-alive: "10s"    
+    jackson:
+        date-format: yyyy-MM-dd HH:mm:ss
+        #time-zone:
+        #locale: 
+        #property-naming-strategy: 
+        serialization:
+            write-dates-with-zone-id: true
+            write-dates-as-timestamps: false
+    #hateoas:
+        #use-hal-as-default-json-media-type: false
+    #webflux:
+        #base-path: hammer
+
+    mvc:
+        throw-exception-if-no-handler-found: true    
+    web:
+        resources:
+            add-mappings: false
+server:
+    forward-headers-strategy: framework
+    #port: 8080
+    #servlet:
+        #context-path: hammer        
+# ===================================================================
+# Application specific properties
+# Add your own application properties here, see the ApplicationProperties class
+# ===================================================================
+#test:
+    #prop: 
+        #sample: Sample value from application.yml
+        #placeholder: Substituted from application.yml
+        #yml:
+            #exclusive: Property defined only in application.yml
+
+application:
+    pagination:
+        enabled: true
+        one-indexed-page: false
+        default-page-size: 25
+        max-page-size: 1500
+        #page-param-name: 
+        #page-param-description: 
+        #size-param-name: 
+        #size-param-description: 
+        #sort-param-name: 
+        #sort-param-description: 
+    cors:
+        allowed-origins: "*"
+        allowed-methods: "*"
+        allowed-headers: "*"
+        exposed-headers: "Authorization,Link,X-total-count,X-app-success,X-app-warning,X-app-error"
+        #exposed-headers: "Cache-Control,Content-Type,X-Frame-Options,X-XSS-Protection,strict-transport-security,x-content-security-policy,x-content-type-options,Authorization,Link,X-Total-Count,X-pricing-info,X-pricing-warning,X-pricing-success,X-pricing-error"
+        allow-credentials: false
+        max-age: 1800
+    swagger:
+        enabled: true
+        title: Auction API
+        description: Auction API documentation
+        version: 0.0.1
+        terms-of-service-url:
+        contact-name:
+        contact-url:
+        contact-email:
+        license:
+        license-url:
+        host: localhost:8080
+        default-include-pattern: /api/.*
+        #protocols:
+            #- http
+    external-config:
+        enabled: false
+        properties:
+            enabled: true
+            placeholder-prefix: '${'
+            placeholder-suffix: '}'
+            value-separator: ':'
+            trim-values: true
+            ignore-unresolvable-placeholders: false
+            local-override: true
+            ignore-resource-not-found: true
+            nullValue : ""
+            defaults: config/default.yml, config/default.properties # comma seperated list
+            source-bean-name: externalProperties1
+            additional: 
+                - config/override.properties
+                - config/env-postprocess.properties
+        messages:
+            enabled: true
+            always-use-message-format: false
+            cache-duration: 10s
+            fallback-to-system-locale: true
+            use-code-as-default-message: false
+            ignore-resource-not-found: true
+            source-bean-name: resourceBundles
+            basenames:
+                - i18n/messages
+                - i18n/errors
+    problem:
+        enabled: true
+        debug-info: false
+         

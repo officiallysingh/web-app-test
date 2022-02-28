@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+				http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util-4.1.xsd">
+	<!-- bean definitions here -->
+
+	<!-- creates a java.util.Properties instance with values loaded from the 
+		supplied location -->
+	<bean id="sampleProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="location"
+			value="classpath:spring/sample.properties" />
+	</bean>
+
+	<util:properties id="default-properties"
+		location="classpath:spring/sample2.properties">
+		<prop key="xml.key2">XML value 2</prop>
+		<prop key="sample.key2">${sample.key1} and XML Sample value 2</prop>
+	</util:properties>
+
+	<bean id="derivedProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean"
+		parent="default-properties">
+		<property name="properties">
+			<props merge="true">
+				<prop key="derived.key1">Derived Value 1</prop>
+				<prop key="list.prop">Item 1, Item 2, Item 3</prop>
+			</props>
+		</property>
+	</bean>
+
+	<util:list id="globalProperites">
+		<ref bean="sampleProperties" />
+		<ref bean="default-properties" />
+		<ref bean="derivedProperties" />
+	</util:list>
+
+	<bean
+		class="com.ksoot.hammer.config.ExternalPropertySourcesPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="false" />
+		<property name="propertiesList" ref="globalProperites" />
+	</bean>
+
+	<util:properties id="messages"
+		location="classpath:i18n/messages.properties">
+		<prop key="local.message">XML file contained message</prop>
+	</util:properties>
+	<util:properties id="messages_en">
+		<prop key="placeholder.test.message">${sample.key2} resolved message en</prop>
+	</util:properties>
+
+	<util:map id="resourceBundles"
+		map-class="java.util.HashMap" key-type="java.util.Locale"
+		value-type="java.util.Properties">
+		<entry key="ROOT" value-ref="messages"/>
+		<entry key="en" value-ref="messages_en"/>
+	</util:map>
+	<!-- <bean id="myEnvironment" -->
+	<!-- class="com.ksoot.hammer.config.MyEnvironment" -->
+	<!-- c:localProperties-ref="globalProperites" init-method="init" /> -->
+
+	<!-- <bean -->
+	<!-- class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"> -->
+	<!-- <property name="ignoreUnresolvablePlaceholders" value="false" /> -->
+	<!-- <property name="propertiesArray"> -->
+	<!-- <array> -->
+	<!-- <ref bean="sampleProperties" /> -->
+	<!-- <ref bean="default-properties" /> -->
+	<!-- <ref bean="derivedProperties" /> -->
+	<!-- </array> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+	<!-- <util:properties id="default-properties"> -->
+	<!-- <prop key="new.xml.key1">XML value new</prop> -->
+	<!-- <prop key="new.xml.key2">XML value2 new</prop> -->
+	<!-- </util:properties> -->
+
+	<util:list id="emails" list-class="java.util.LinkedList"
+		value-type="java.lang.String">
+		<value>pechorin@hero.org</value>
+		<value>raskolnikov@slums.org</value>
+		<value>stavrogin@gov.org</value>
+		<value>porfiry@gov.org</value>
+	</util:list>
+
+	<!-- <util:set id="options" set-class="java.util.LinkedHashSet"> -->
+	<!-- <bean c:left="key1" c:right="val1" -->
+	<!-- class="org.apache.commons.lang3.tuple.ImmutablePair" -->
+	<!-- factory-method="of" /> -->
+	<!-- </util:set> -->
+
+	<!-- <bean id="childOptions" -->
+	<!-- class="org.springframework.beans.factory.config.SetFactoryBean" -->
+	<!-- parent="options"> -->
+	<!-- <property name="sourceSet"> -->
+	<!-- <set merge="true"> -->
+	<!-- <bean c:left="key1" c:right="val1" -->
+	<!-- class="org.apache.commons.lang3.tuple.ImmutablePair" -->
+	<!-- factory-method="of" /> -->
+	<!-- <bean c:left="key2" c:right="val2" -->
+	<!-- class="org.apache.commons.lang3.tuple.ImmutablePair" -->
+	<!-- factory-method="of" /> -->
+	<!-- </set> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+	<!-- <util:constant id="min" static-field="java.lang.Integer.MIN_VALUE" 
+		/> -->
+
+	<!-- <util:constant static-field="java.lang.Integer.MAX_VALUE" /> -->
+
+	<!-- <util:list id="prop1" value-type="org.apache.commons.lang3.tuple.ImmutablePair"> -->
+	<!-- <bean class="org.apache.commons.lang3.tuple.ImmutablePair" factory-method="of" 
+		p:left="lef1" p:right="right1"/> -->
+	<!-- <bean class="org.apache.commons.lang3.tuple.ImmutablePair" factory-method="of" 
+		p:left="lef2" p:right="right2"/> -->
+	<!-- </util:list> -->
+
+	<!-- <bean id="rob" class="org.springframework.beans.test.TestBean" -->
+	<!-- p:name="Rob Harrop" p:spouse-ref="sally"> -->
+	<!-- <property name="age" value="24" /> -->
+	<!-- </bean> -->
+
+	<!-- <bean id="sally" class="org.springframework.beans.test.TestBean" -->
+	<!-- p:name="Sally Greenwood" p:spouse-ref="rob" /> -->
+
+	<!-- <bean id="sally2" class="org.springframework.beans.test.TestBean"> -->
+	<!-- <property name="spouse"> -->
+	<!-- <bean id="rob2" class="org.springframework.beans.test.TestBean" -->
+	<!-- p:name="Rob Harrop" p:spouse-ref="sally2"> -->
+	<!-- <property name="age" value="24" /> -->
+	<!-- </bean> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+	<!-- <bean id="derivedSally" class="org.springframework.beans.test.DerivedTestBean" 
+		p:name="Sally Greenwood" p:spouseRef="r"/> -->
+
+</beans>
